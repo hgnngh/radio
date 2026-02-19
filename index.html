@@ -22,22 +22,6 @@
             padding-left: 10px;
         }
     </style>
-    <script>
-        function onlyPlayOneIn(container) {
-            container.addEventListener("play", function (event) {
-                audio_elements = container.getElementsByTagName("audio")
-                for (i = 0; i < audio_elements.length; i++) {
-                    audio_element = audio_elements[i];
-                    if (audio_element !== event.target) {
-                        audio_element.pause();
-                    }
-                }
-            }, true);
-        }
-        document.addEventListener("DOMContentLoaded", function () {
-            onlyPlayOneIn(document.body);
-        });
-    </script>
 </head>
 
 <body>
@@ -53,24 +37,41 @@
         <tr>
             <td>92.1</td>
             <td>RTR FM</td>
-            <td><audio id="audio_921"></audio></td>
+            <td>
+                <button class=playButton>
+                    <span class="text"></span>
+                    <audio class="audioPlayer" id="audio_921"></audio>
+                </button>
+            </td>
         </tr>
         <tr>
             <td>92.9</td>
             <td>Triple M</td>
-            <td><audio id="audio_929"></audio>
+            <td>
+                <button class=playButton>
+                    <span class="text"></span>
+                    <audio class="audioPlayer" id="audio_929"></audio>
+                </button>
             </td>
         </tr>
         <tr>
             <td>93.7</td>
             <td>Nova</td>
-            <td><audio id="audio_937"></audio>
+            <td>
+                <button class=playButton>
+                    <span class="text"></span>
+                    <audio class="audioPlayer" id="audio_937"></audio>
+                </button>
             </td>
         </tr>
         <tr>
             <td>94.5</td>
             <td>Mix 94.5</td>
-            <td><audio id="audio_945"></audio>
+            <td>
+                <button class=playButton>
+                    <span class="text"></span>
+                    <audio class="audioPlayer" id="audio_945"></audio>
+                </button>
             </td>
         </tr>
         <tr>
@@ -81,7 +82,11 @@
         <tr>
             <td>96.1</td>
             <td>GOLD 96FM</td>
-            <td><audio id="audio_961"></audio>
+            <td>
+                <button class=playButton>
+                    <span class="text"></span>
+                    <audio class="audioPlayer" id="audio_961"></audio>
+                </button>
             </td>
         </tr>
         <tr>
@@ -92,28 +97,52 @@
         <tr>
             <td>97.7</td>
             <td>ABC Classic</td>
-            <td><audio id="audio_977"></audio></td>
+            <td>
+                <button class=playButton>
+                    <span class="text"></span>
+                    <audio class="audioPlayer" id="audio_977"></audio>
+                </button>
+            </td>
         </tr>
         <tr>
             <td>98.5</td>
             <td>Sonshine</td>
-            <td><audio id="audio_985"></audio></td>
+            <td>
+                <button class=playButton>
+                    <span class="text"></span>
+                    <audio class="audioPlayer" id="audio_985"></audio>
+                </button>
+            </td>
         </tr>
         <tr>
             <td>99.3</td>
             <td>Triple J</td>
-            <td><audio id="audio_993"></audio>
+            <td>
+                <button class=playButton>
+                    <span class="text"></span>
+                    <audio class="audioPlayer" id="audio_993"></audio>
+                </button>
             </td>
         </tr>
         <tr>
             <td>100.1</td>
             <td>Curtin Radio</td>
-            <td><audio id="audio_1001"></audio></td>
+            <td>
+                <button class=playButton>
+                    <span class="text"></span>
+                    <audio class="audioPlayer" id="audio_1001"></audio>
+                </button>
+            </td>
         </tr>
         <tr>
             <td>100.9</td>
             <td>Noongar Radio</td>
-            <td><audio id="audio_1009"></audio></td>
+            <td>
+                <button class=playButton>
+                    <span class="text"></span>
+                    <audio class="audioPlayer" id="audio_1009"></audio>
+                </button>
+            </td>
         </tr>
         <tr>
             <td></td>
@@ -121,14 +150,21 @@
             <td></td>
         </tr>
     </table>
-
 </body>
 
 <script>
-    const audioElements = document.querySelectorAll('audio');
-    audioElements.forEach(audio => {
+    const audioPlayers = document.querySelectorAll('.audioPlayer');
+    audioPlayers.forEach(audio => {
         audio.setAttribute('controls', '');
         audio.setAttribute('preload', 'none');
+        audio.setAttribute('src', '#');
+    });
+
+    const playAudioButtons = document.querySelectorAll('.playButton');
+    playAudioButtons.forEach(button => {
+        button.setAttribute('onclick', 'fetchAndPlayLiveStream(this)');
+        const textElement = button.querySelector('.text');
+        textElement.textContent = "play";
     });
 
     const url_921 = "https://live.rtrfm.com.au/stream1";
@@ -142,16 +178,45 @@
     const url_1001 = "https://usa7.fastcast4u.com/proxy/curtinfm?mp=/1";
     const url_1009 = "https://firstnationsmedia.stream/8028/stream";
 
-    document.getElementById("audio_921").src = url_921;
-    document.getElementById("audio_929").src = url_929;
-    document.getElementById("audio_937").src = url_937;
-    document.getElementById("audio_945").src = url_945;
-    document.getElementById("audio_961").src = url_961;
-    document.getElementById("audio_977").src = url_977;
-    document.getElementById("audio_985").src = url_985;
-    document.getElementById("audio_993").src = url_993;
-    document.getElementById("audio_1001").src = url_1001;
-    document.getElementById("audio_1009").src = url_1009;
+    const stationLiveStreams = new Map();
+    stationLiveStreams.set(document.getElementById("audio_921"), url_921);
+    stationLiveStreams.set(document.getElementById("audio_929"), url_929);
+    stationLiveStreams.set(document.getElementById("audio_937"), url_937);
+    stationLiveStreams.set(document.getElementById("audio_945"), url_945);
+    stationLiveStreams.set(document.getElementById("audio_961"), url_961);
+    stationLiveStreams.set(document.getElementById("audio_977"), url_977);
+    stationLiveStreams.set(document.getElementById("audio_985"), url_985);
+    stationLiveStreams.set(document.getElementById("audio_993"), url_993);
+    stationLiveStreams.set(document.getElementById("audio_1001"), url_1001);
+    stationLiveStreams.set(document.getElementById("audio_1009"), url_1009);
+
+
+    function onlyPlayOneIn(container) {
+        container.addEventListener("play", function (event) {
+            audio_elements = container.getElementsByTagName("audio")
+            for (i = 0; i < audio_elements.length; i++) {
+                audio_element = audio_elements[i];
+                if (audio_element !== event.target) {
+                    audio_element.pause();
+                }
+            }
+        }, true);
+    }
+    document.addEventListener("DOMContentLoaded", function () {
+        onlyPlayOneIn(document.body);
+    });
+
+    function fetchAndPlayLiveStream(buttonElement) {
+        const audioElement = buttonElement.querySelector('.audioPlayer');
+
+        let liveStreamURL = stationLiveStreams.get(audioElement);
+        // make the url different so that it refreshes each time you press play
+        liveStreamURL += new Date().getTime();
+        audioElement.src = liveStreamURL;
+        audioElement.load();
+        audioElement.play();
+    }
+
 </script>
 
 </html>
