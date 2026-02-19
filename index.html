@@ -155,14 +155,13 @@
 <script>
     const audioPlayers = document.querySelectorAll('.audioPlayer');
     audioPlayers.forEach(audio => {
-        audio.setAttribute('controls', '');
         audio.setAttribute('preload', 'none');
-        audio.setAttribute('src', '#');
     });
 
     const playAudioButtons = document.querySelectorAll('.playButton');
     playAudioButtons.forEach(button => {
-        button.setAttribute('onclick', 'fetchAndPlayLiveStream(this)');
+        button.setAttribute('isPlaying', false);
+        button.setAttribute('onclick', 'togglePlayButton(this)');
         const textElement = button.querySelector('.text');
         textElement.textContent = "play";
     });
@@ -190,22 +189,6 @@
     stationLiveStreams.set(document.getElementById("audio_1001"), url_1001);
     stationLiveStreams.set(document.getElementById("audio_1009"), url_1009);
 
-
-    function onlyPlayOneIn(container) {
-        container.addEventListener("play", function (event) {
-            audio_elements = container.getElementsByTagName("audio")
-            for (i = 0; i < audio_elements.length; i++) {
-                audio_element = audio_elements[i];
-                if (audio_element !== event.target) {
-                    audio_element.pause();
-                }
-            }
-        }, true);
-    }
-    document.addEventListener("DOMContentLoaded", function () {
-        onlyPlayOneIn(document.body);
-    });
-
     function fetchAndPlayLiveStream(buttonElement) {
         const audioElement = buttonElement.querySelector('.audioPlayer');
 
@@ -215,6 +198,35 @@
         audioElement.src = liveStreamURL;
         audioElement.load();
         audioElement.play();
+    }
+
+    function stopPlayingLiveStream(buttonElement) {
+        const audioElement = buttonElement.querySelector('.audioPlayer');
+        audioElement.pause();
+    }
+
+    function turnOffAllStations() {
+        const playAudioButtons = document.querySelectorAll('.playButton');
+        playAudioButtons.forEach(button => {
+            if (button.isPlaying) {
+                togglePlayButton(button);
+            }
+        });
+    }
+
+    function togglePlayButton(buttonElement) {
+        const textElement = buttonElement.querySelector('.text');
+        if (buttonElement.isPlaying) {
+            stopPlayingLiveStream(buttonElement);
+            buttonElement.isPlaying = false;
+            textElement.textContent = "play";
+        }
+        else {
+            turnOffAllStations();
+            fetchAndPlayLiveStream(buttonElement);
+            buttonElement.isPlaying = true;
+            textElement.textContent = "stop playing";
+        }
     }
 
 </script>
