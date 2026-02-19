@@ -37,7 +37,12 @@
         <tr>
             <td>92.1</td>
             <td>RTR FM</td>
-            <td><audio id="audio_921"></audio></td>
+            <td>
+                <button class=playButton>
+                    <span class="text"></span>
+                    <audio class="audioPlayer" id="audio_921"></audio>
+                </button>
+            </td>
         </tr>
         <tr>
             <td>92.9</td>
@@ -106,13 +111,23 @@
         </tr>
     </table>
 
+    <p id="tester">testing testing testing...</p>
+
 </body>
 
 <script>
-    const audioElements = document.querySelectorAll('audio');
-    audioElements.forEach(audio => {
+    const audioPlayers = document.querySelectorAll('.audioPlayer');
+    audioPlayers.forEach(audio => {
         audio.setAttribute('controls', '');
         audio.setAttribute('preload', 'none');
+        audio.setAttribute('src', '#');
+    });
+
+    const playAudioButtons = document.querySelectorAll('.playButton');
+    playAudioButtons.forEach(button => {
+        button.setAttribute('onclick', 'fetchAndPlayLiveStream(this)');
+        const textElement = button.querySelector('.text');
+        textElement.textContent = "play";
     });
 
     const url_921 = "https://live.rtrfm.com.au/stream1";
@@ -125,17 +140,6 @@
     const url_993 = "https://streaming.abc-cdn.net.au/audio/hls/triplejnsw.m3u8?source=web";
     const url_1001 = "https://usa7.fastcast4u.com/proxy/curtinfm?mp=/1";
     const url_1009 = "https://firstnationsmedia.stream/8028/stream";
-
-    document.getElementById("audio_921").src = url_921;
-    document.getElementById("audio_929").src = url_929;
-    document.getElementById("audio_937").src = url_937;
-    document.getElementById("audio_945").src = url_945;
-    document.getElementById("audio_961").src = url_961;
-    document.getElementById("audio_977").src = url_977;
-    document.getElementById("audio_985").src = url_985;
-    document.getElementById("audio_993").src = url_993;
-    document.getElementById("audio_1001").src = url_1001;
-    document.getElementById("audio_1009").src = url_1009;
 
     const stationLiveStreams = new Map();
     stationLiveStreams.set(document.getElementById("audio_921"), url_921);
@@ -164,6 +168,19 @@
     document.addEventListener("DOMContentLoaded", function () {
         onlyPlayOneIn(document.body);
     });
+
+    function fetchAndPlayLiveStream(buttonElement) {
+        const audioElement = buttonElement.querySelector('.audioPlayer');
+
+        let liveStreamURL = stationLiveStreams.get(audioElement);
+        // make the url different so that it refreshes each time you press play
+        liveStreamURL += new Date().getTime();
+        audioElement.src = liveStreamURL;
+        audioElement.load();
+        audioElement.play();
+
+        document.getElementById('tester').textContent = audioElement; // TESTING
+    }
 
 </script>
 
