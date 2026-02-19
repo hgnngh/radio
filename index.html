@@ -162,7 +162,8 @@
 
     const playAudioButtons = document.querySelectorAll('.playButton');
     playAudioButtons.forEach(button => {
-        button.setAttribute('onclick', 'fetchAndPlayLiveStream(this)');
+        button.setAttribute('isPlaying', false);
+        button.setAttribute('onclick', 'togglePlayButton(this)');
         const textElement = button.querySelector('.text');
         textElement.textContent = "play";
     });
@@ -215,6 +216,25 @@
         audioElement.src = liveStreamURL;
         audioElement.load();
         audioElement.play();
+    }
+
+    function stopPlayingLiveStream(buttonElement) {
+        const audioElement = buttonElement.querySelector('.audioPlayer');
+        audioElement.pause();
+    }
+
+    function togglePlayButton(buttonElement) {
+        const textElement = buttonElement.querySelector('.text');
+        if (buttonElement.isPlaying) {
+            stopPlayingLiveStream(buttonElement)
+            buttonElement.isPlaying = false;
+            textElement.textContent = "play";
+        }
+        else {
+            fetchAndPlayLiveStream(buttonElement);
+            buttonElement.isPlaying = true;
+            textElement.textContent = "stop playing";
+        }
     }
 
 </script>
