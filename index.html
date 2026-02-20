@@ -190,43 +190,61 @@
     stationLiveStreams.set(document.getElementById("audio_1001"), url_1001);
     stationLiveStreams.set(document.getElementById("audio_1009"), url_1009);
 
-    function fetchAndPlayLiveStream(buttonElement) {
-        const audioElement = buttonElement.querySelector('.audioPlayer');
-
+    function fetchAndPlayLiveStream(audioElement) {
         let liveStreamURL = stationLiveStreams.get(audioElement);
         // make the url different so that it refreshes each time you press play
-        liveStreamURL += new Date().getTime();
+        liveStreamURL += "#" + new Date().getTime();
         audioElement.src = liveStreamURL;
         audioElement.load();
         audioElement.play();
-    }
-
-    function stopPlayingLiveStream(buttonElement) {
-        const audioElement = buttonElement.querySelector('.audioPlayer');
-        audioElement.pause();
     }
 
     function turnOffAllStations() {
         const playAudioButtons = document.querySelectorAll('.playButton');
         playAudioButtons.forEach(button => {
             if (button.isPlaying) {
-                togglePlayButton(button);
+                turnOffStation(button);
             }
         });
     }
 
-    function togglePlayButton(buttonElement) {
+    function turnOffStation(buttonElement) {
+        const audioElement = buttonElement.querySelector('.audioPlayer');
+        audioElement.pause();
         const textElement = buttonElement.querySelector('.text');
+        textElement.textContent = "play";
+        buttonElement.isPlaying = false;
+    }
+
+    function turnOnStation(buttonElement) {
+        const audioElement = buttonElement.querySelector('.audioPlayer');
+        turnOffAllStations();
+        fetchAndPlayLiveStream(audioElement);
+        buttonElement.isPlaying = true;
+        audioElement.onplaying = () => { handleAudioPlaying(buttonElement); };
+        audioElement.onwaiting = () => { handleAudioLoading(buttonElement); };
+        audioElement.onerror = () => { handleAudioError(buttonElement); };
+    }
+
+    function handleAudioPlaying(buttonElement) {
+        const textElement = buttonElement.querySelector('.text');
+        textElement.textContent = "stop playing";
+    }
+    function handleAudioLoading(buttonElement) {
+        const textElement = buttonElement.querySelector('.text');
+        textElement.textContent = "loading...";
+    }
+    function handleAudioError(buttonElement) {
+        const textElement = buttonElement.querySelector('.text');
+        textElement.textContent = "oh no! there was an error!";
+    }
+
+    function togglePlayButton(buttonElement) {
         if (buttonElement.isPlaying) {
-            stopPlayingLiveStream(buttonElement);
-            buttonElement.isPlaying = false;
-            textElement.textContent = "play";
+            turnOffStation(buttonElement);
         }
         else {
-            turnOffAllStations();
-            fetchAndPlayLiveStream(buttonElement);
-            buttonElement.isPlaying = true;
-            textElement.textContent = "stop playing";
+            turnOnStation(buttonElement);
         }
     }
 
