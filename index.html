@@ -190,9 +190,7 @@
     stationLiveStreams.set(document.getElementById("audio_1001"), url_1001);
     stationLiveStreams.set(document.getElementById("audio_1009"), url_1009);
 
-    function fetchAndPlayLiveStream(buttonElement) {
-        const audioElement = buttonElement.querySelector('.audioPlayer');
-
+    function fetchAndPlayLiveStream(audioElement) {
         let liveStreamURL = stationLiveStreams.get(audioElement);
         // make the url different so that it refreshes each time you press play
         liveStreamURL += "#" + new Date().getTime();
@@ -216,6 +214,7 @@
     }
 
     function togglePlayButton(buttonElement) {
+        const audioElement = buttonElement.querySelector('.audioPlayer');
         const textElement = buttonElement.querySelector('.text');
         if (buttonElement.isPlaying) {
             stopPlayingLiveStream(buttonElement);
@@ -224,10 +223,16 @@
         }
         else {
             turnOffAllStations();
-            fetchAndPlayLiveStream(buttonElement);
+            fetchAndPlayLiveStream(audioElement);
             buttonElement.isPlaying = true;
             textElement.textContent = "stop playing";
+            audioElement.onerror = () => { handleAudioError(buttonElement); };
         }
+    }
+
+    function handleAudioError(buttonElement) {
+        const textElement = buttonElement.querySelector('.text');
+        textElement.textContent = "oh no.... there was an error!";
     }
 
 </script>
