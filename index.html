@@ -195,7 +195,7 @@
 
         let liveStreamURL = stationLiveStreams.get(audioElement);
         // make the url different so that it refreshes each time you press play
-        liveStreamURL += new Date().getTime();
+        liveStreamURL += "#" + new Date().getTime();
         audioElement.src = liveStreamURL;
         audioElement.load();
         audioElement.play();
