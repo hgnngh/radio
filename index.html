@@ -232,7 +232,11 @@
     }
     function handleAudioLoading(buttonElement) {
         const textElement = buttonElement.querySelector('.text');
-        textElement.textContent = "loading...";
+        textElement.textContent = "loading";
+        const loadingInterval = setInterval(() => {
+            textElement.textContent += ".";
+        }, 500); // Change text every 1/2 a second
+        return () => clearInterval(loadingInterval);
     }
     function handleAudioError(buttonElement) {
         const textElement = buttonElement.querySelector('.text');
