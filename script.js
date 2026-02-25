@@ -1,6 +1,7 @@
 const audioPlayers = document.querySelectorAll('.audioPlayer');
 audioPlayers.forEach(audio => {
     audio.setAttribute('preload', 'none');
+    audio.setAttribute('crossOrigin', 'anonymous');
 });
 
 const playAudioButtons = document.querySelectorAll('.playButton');
@@ -65,15 +66,17 @@ function turnOnStation(buttonElement) {
     turnOffAllStations();
     fetchAndPlayLiveStream(audioElement);
     buttonElement.isPlaying = true;
-    audioElement.onplaying = () => { handleAudioPlaying(buttonElement); };
+    audioElement.onplaying = () => { handleAudioPlaying(buttonElement, audioElement); };
     audioElement.onwaiting = () => { handleAudioLoading(buttonElement); };
     audioElement.onerror = () => { handleAudioError(buttonElement); };
 }
 
-function handleAudioPlaying(buttonElement) {
+function handleAudioPlaying(buttonElement, audioElement) {
     const textElement = buttonElement.querySelector('.text');
     textElement.textContent = "stop playing";
-    setUpAudioCanvas();
+
+    const stream = audioElement.captureStream();
+    setUpAudioCanvas(stream);
 }
 function handleAudioLoading(buttonElement) {
     const textElement = buttonElement.querySelector('.text');
@@ -99,14 +102,11 @@ canvasCtx.fillStyle = "green";
 // Add a rectangle at (10, 10) with size 100x100 pixels
 canvasCtx.fillRect(10, 10, 100, 100);
 
-function setUpAudioCanvas() {
+function setUpAudioCanvas(stream) {
 
     audioCtx = new AudioContext();
     // get the audio element
-    soundSource = document.getElementById("audio_921");
-    stream = soundSource.srcObject;
 
-    document.getElementById('tester').textContent = stream; // TESTING
     canvasCtx.fillStyle = "red";
     canvasCtx.fillRect(10, 10, 100, 100);
 
