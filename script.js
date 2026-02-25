@@ -76,7 +76,7 @@ function handleAudioPlaying(buttonElement, audioElement) {
     textElement.textContent = "stop playing";
 
     const stream = audioElement.captureStream();
-    setUpAudioCanvas(stream);
+    setUpVisuals(stream);
 }
 function handleAudioLoading(buttonElement) {
     const textElement = buttonElement.querySelector('.text');
@@ -96,59 +96,94 @@ function togglePlayButton(buttonElement) {
     }
 }
 
-const canvas = document.querySelector("canvas");
-const canvasCtx = canvas.getContext("2d");
-
-const WIDTH = 1000;
+const WIDTH = 500;
 const HEIGHT = 500;
 
-const audioCtx = new AudioContext();
-const analyser = audioCtx.createAnalyser();
+const waveCanvas = document.getElementById("waveCanvas");
+const waveCanvasCtx = waveCanvas.getContext("2d");
 
-function setUpAudioCanvas(stream) {
+const barCanvas = document.getElementById("barCanvas");
+const barCanvasCtx = barCanvas.getContext("2d");
+
+const audioCtx = new AudioContext();
+const waveAnalyser = audioCtx.createAnalyser();
+const barAnalyser = audioCtx.createAnalyser();
+
+function setUpVisuals(stream) {
     audioCtx.resume();
     // pass in the stream
     source = audioCtx.createMediaStreamSource(stream);
     // connect between source and destination...?
     source.connect(audioCtx.destination);
     // setup analyser to capture audio from stream
-    source.connect(analyser);
-    analyser.connect(audioCtx.destination);
-    // capture analyser data into array
-    analyser.fftSize = 2048;
-    const bufferLength = analyser.frequencyBinCount;
-    const dataArray = new Uint8Array(bufferLength);
-    canvasCtx.clearRect(0, 0, WIDTH, HEIGHT);
-    draw(dataArray, bufferLength);
+    source.connect(waveAnalyser);
+    source.connect(barAnalyser);
+    waveAnalyser.connect(audioCtx.destination);
+    barAnalyser.connect(audioCtx.destination);
+
+    setUpWaveVisual();
+    setUpBarVisual();
 }
 
-function draw(dataArray, bufferLength) {
-    requestAnimationFrame(() => draw(dataArray, bufferLength));
-    analyser.getByteTimeDomainData(dataArray);
+function setUpWaveVisual() {
+    // capture analyser data into array
+    waveAnalyser.fftSize = 2048;
+    const bufferLength = waveAnalyser.frequencyBinCount;
+    const dataArray = new Uint8Array(bufferLength);
+    waveCanvasCtx.clearRect(0, 0, WIDTH, HEIGHT);
+    drawWave(dataArray, bufferLength);
+}
+
+function setUpBarVisual() {
+    barAnalyser.fftSize = 256;
+    const bufferLength = barAnalyser.frequencyBinCount;
+    const dataArray = new Uint8Array(bufferLength);
+    barCanvasCtx.clearRect(0, 0, WIDTH, HEIGHT);
+    drawBar(dataArray, bufferLength);
+}
+
+function drawWave(dataArray, bufferLength) {
+    requestAnimationFrame(() => drawWave(dataArray, bufferLength));
+    waveAnalyser.getByteTimeDomainData(dataArray);
     // Fill solid color
-    canvasCtx.fillStyle = "rgb(200 200 200)";
-    canvasCtx.fillRect(0, 0, WIDTH, HEIGHT);
+    waveCanvasCtx.fillStyle = "rgb(200 200 200)";
+    waveCanvasCtx.fillRect(0, 0, WIDTH, HEIGHT);
     // Begin the path
-    canvasCtx.lineWidth = 2;
-    canvasCtx.strokeStyle = "rgb(0 0 0)";
-    canvasCtx.beginPath();
+    waveCanvasCtx.lineWidth = 2;
+    waveCanvasCtx.strokeStyle = "rgb(0 0 0)";
+    waveCanvasCtx.beginPath();
     // Draw each point in the waveform
     const sliceWidth = WIDTH / bufferLength;
     let x = 0;
     for (let i = 0; i < bufferLength; i++) {
         const v = dataArray[i] / 128.0;
         const y = v * (HEIGHT / 2);
-
         if (i === 0) {
-            canvasCtx.moveTo(x, y);
+            waveCanvasCtx.moveTo(x, y);
         } else {
-            canvasCtx.lineTo(x, y);
+            waveCanvasCtx.lineTo(x, y);
         }
-
         x += sliceWidth;
     }
-
     // Finish the line
-    canvasCtx.lineTo(WIDTH, HEIGHT / 2);
-    canvasCtx.stroke();
+    waveCanvasCtx.lineTo(WIDTH, HEIGHT / 2);
+    waveCanvasCtx.stroke();
+}
+
+function drawBar(dataArray, bufferLength) {
+    requestAnimationFrame(() => drawBar(dataArray, bufferLength));
+    barAnalyser.getByteFrequencyData(dataArray);
+    barCanvasCtx.fillStyle = "rgb(0 0 0)";
+    barCanvasCtx.fillRect(0, 0, WIDTH, HEIGHT);
+    const barWidth = (WIDTH / bufferLength) * 2.5;
+    let barHeight;
+    let x = 0;
+    for (let i = 0; i < bufferLength; i++) {
+        barHeight = dataArray[i] / 2;
+
+        barCanvasCtx.fillStyle = `rgb(${barHeight + 100} 50 50)`;
+        barCanvasCtx.fillRect(x, HEIGHT - barHeight / 2, barWidth, barHeight);
+
+        x += barWidth + 1;
+    }
 }

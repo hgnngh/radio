@@ -15,3 +15,22 @@ td {
     height: 60px;
     padding-left: 10px;
 }
+
+.visualizer-container {
+    display: flex;
+    flex-direction: row;
+    /* Change to 'column' to stack them vertically */
+    gap: 20px;
+    /* Modern way to add spacing between items */
+    justify-content: center;
+    /* Centers them on the page */
+    flex-wrap: wrap;
+    /* Allows them to wrap if the screen is too small */
+}
+
+canvas {
+    background-color: #f0f0f0;
+    max-width: 100%;
+    /* Prevents them from breaking the mobile layout */
+    height: auto;
+}
