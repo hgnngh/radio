@@ -1,6 +1,7 @@
 const audioPlayers = document.querySelectorAll('.audioPlayer');
 audioPlayers.forEach(audio => {
     audio.setAttribute('preload', 'none');
+    audio.setAttribute('crossOrigin', 'anonymous');
 });
 
 const playAudioButtons = document.querySelectorAll('.playButton');
@@ -65,14 +66,17 @@ function turnOnStation(buttonElement) {
     turnOffAllStations();
     fetchAndPlayLiveStream(audioElement);
     buttonElement.isPlaying = true;
-    audioElement.onplaying = () => { handleAudioPlaying(buttonElement); };
+    audioElement.onplaying = () => { handleAudioPlaying(buttonElement, audioElement); };
     audioElement.onwaiting = () => { handleAudioLoading(buttonElement); };
     audioElement.onerror = () => { handleAudioError(buttonElement); };
 }
 
-function handleAudioPlaying(buttonElement) {
+function handleAudioPlaying(buttonElement, audioElement) {
     const textElement = buttonElement.querySelector('.text');
     textElement.textContent = "stop playing";
+    // audio visual effects
+    const stream = audioElement.captureStream();
+    setUpAudioVisuals(stream);
 }
 function handleAudioLoading(buttonElement) {
     const textElement = buttonElement.querySelector('.text');
