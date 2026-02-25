@@ -73,6 +73,7 @@ function turnOnStation(buttonElement) {
 function handleAudioPlaying(buttonElement) {
     const textElement = buttonElement.querySelector('.text');
     textElement.textContent = "stop playing";
+    setUpAudioCanvas();
 }
 function handleAudioLoading(buttonElement) {
     const textElement = buttonElement.querySelector('.text');
@@ -90,4 +91,69 @@ function togglePlayButton(buttonElement) {
     else {
         turnOnStation(buttonElement);
     }
+}
+
+const canvas = document.querySelector("canvas");
+const canvasCtx = canvas.getContext("2d");
+canvasCtx.fillStyle = "green";
+// Add a rectangle at (10, 10) with size 100x100 pixels
+canvasCtx.fillRect(10, 10, 100, 100);
+
+function setUpAudioCanvas() {
+
+    audioCtx = new AudioContext();
+    // get the audio element
+    soundSource = document.getElementById("audio_921");
+    stream = soundSource.srcObject;
+
+    document.getElementById('tester').textContent = stream; // TESTING
+    canvasCtx.fillStyle = "red";
+    canvasCtx.fillRect(10, 10, 100, 100);
+
+    // pass it into the audio context
+    source = audioCtx.createMediaStreamSource(stream);
+
+    // connect between source and destination...?
+    source.connect(audioCtx.destination);
+    // setup analyser to capture audio from stream
+    const analyser = audioCtx.createAnalyser();
+    source.connect(analyser);
+    analyser.connect(audioCtx.destination);
+    // capture analyser data into array
+    analyser.fftSize = 2048;
+    const bufferLength = analyser.frequencyBinCount;
+    const dataArray = new Uint8Array(bufferLength);
+    // canvasCtx.clearRect(0, 0, 1000, 1000);
+    draw();
+}
+
+function draw() {
+    const drawVisual = requestAnimationFrame(draw);
+    analyser.getByteTimeDomainData(dataArray);
+    // Fill solid color
+    canvasCtx.fillStyle = "rgb(200 200 200)";
+    canvasCtx.fillRect(0, 0, WIDTH, HEIGHT);
+    // Begin the path
+    canvasCtx.lineWidth = 2;
+    canvasCtx.strokeStyle = "rgb(0 0 0)";
+    canvasCtx.beginPath();
+    // Draw each point in the waveform
+    const sliceWidth = WIDTH / bufferLength;
+    let x = 0;
+    for (let i = 0; i < bufferLength; i++) {
+        const v = dataArray[i] / 128.0;
+        const y = v * (HEIGHT / 2);
+
+        if (i === 0) {
+            canvasCtx.moveTo(x, y);
+        } else {
+            canvasCtx.lineTo(x, y);
+        }
+
+        x += sliceWidth;
+    }
+
+    // Finish the line
+    canvasCtx.lineTo(WIDTH, HEIGHT / 2);
+    canvasCtx.stroke();
 }
