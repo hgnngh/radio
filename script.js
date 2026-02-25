@@ -106,6 +106,7 @@ const audioCtx = new AudioContext();
 const analyser = audioCtx.createAnalyser();
 
 function setUpAudioCanvas(stream) {
+    audioCtx.resume();
     // pass in the stream
     source = audioCtx.createMediaStreamSource(stream);
     // connect between source and destination...?
@@ -114,7 +115,7 @@ function setUpAudioCanvas(stream) {
     source.connect(analyser);
     analyser.connect(audioCtx.destination);
     // capture analyser data into array
-    analyser.fftSize = 256;
+    analyser.fftSize = 2048;
     const bufferLength = analyser.frequencyBinCount;
     const dataArray = new Uint8Array(bufferLength);
     canvasCtx.clearRect(0, 0, WIDTH, HEIGHT);
