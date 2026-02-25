@@ -27,10 +27,3 @@ td {
     flex-wrap: wrap;
     /* Allows them to wrap if the screen is too small */
 }
-
-canvas {
-    background-color: #f0f0f0;
-    max-width: 100%;
-    /* Prevents them from breaking the mobile layout */
-    height: auto;
-}
