@@ -98,37 +98,31 @@ function togglePlayButton(buttonElement) {
 
 const canvas = document.querySelector("canvas");
 const canvasCtx = canvas.getContext("2d");
-canvasCtx.fillStyle = "green";
-// Add a rectangle at (10, 10) with size 100x100 pixels
-canvasCtx.fillRect(10, 10, 100, 100);
+
+const WIDTH = 1000;
+const HEIGHT = 500;
+
+const audioCtx = new AudioContext();
+const analyser = audioCtx.createAnalyser();
 
 function setUpAudioCanvas(stream) {
-
-    audioCtx = new AudioContext();
-    // get the audio element
-
-    canvasCtx.fillStyle = "red";
-    canvasCtx.fillRect(10, 10, 100, 100);
-
-    // pass it into the audio context
+    // pass in the stream
     source = audioCtx.createMediaStreamSource(stream);
-
     // connect between source and destination...?
     source.connect(audioCtx.destination);
     // setup analyser to capture audio from stream
-    const analyser = audioCtx.createAnalyser();
     source.connect(analyser);
     analyser.connect(audioCtx.destination);
     // capture analyser data into array
-    analyser.fftSize = 2048;
+    analyser.fftSize = 256;
     const bufferLength = analyser.frequencyBinCount;
     const dataArray = new Uint8Array(bufferLength);
-    // canvasCtx.clearRect(0, 0, 1000, 1000);
-    draw();
+    canvasCtx.clearRect(0, 0, WIDTH, HEIGHT);
+    draw(dataArray, bufferLength);
 }
 
-function draw() {
-    const drawVisual = requestAnimationFrame(draw);
+function draw(dataArray, bufferLength) {
+    requestAnimationFrame(() => draw(dataArray, bufferLength));
     analyser.getByteTimeDomainData(dataArray);
     // Fill solid color
     canvasCtx.fillStyle = "rgb(200 200 200)";
