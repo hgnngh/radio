@@ -1,4 +1,3 @@
-
 const waveCanvas = document.getElementById("waveCanvas");
 const waveCanvasCtx = waveCanvas.getContext("2d");
 const barCanvas = document.getElementById("barCanvas");
@@ -11,7 +10,7 @@ const audioCtx = new AudioContext();
 const waveAnalyser = audioCtx.createAnalyser();
 const barAnalyser = audioCtx.createAnalyser();
 
-function setUpVisuals(stream) {
+function setUpAudioVisuals(stream) {
     audioCtx.resume();
     // pass in the stream
     source = audioCtx.createMediaStreamSource(stream);

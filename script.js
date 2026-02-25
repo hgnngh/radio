@@ -76,7 +76,7 @@ function handleAudioPlaying(buttonElement, audioElement) {
     textElement.textContent = "stop playing";
     // audio visual effects
     const stream = audioElement.captureStream();
-    setUpVisuals(stream);
+    setUpAudioVisuals(stream);
 }
 function handleAudioLoading(buttonElement) {
     const textElement = buttonElement.querySelector('.text');
@@ -95,6 +95,3 @@ function togglePlayButton(buttonElement) {
         turnOnStation(buttonElement);
     }
 }
-
-
-
