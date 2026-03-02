@@ -46,12 +46,11 @@ function setUpBarVisual() {
 function drawWave(dataArray, bufferLength) {
     requestAnimationFrame(() => drawWave(dataArray, bufferLength));
     waveAnalyser.getByteTimeDomainData(dataArray);
-    // Fill solid color
-    waveCanvasCtx.fillStyle = "rgb(200 200 200)";
-    waveCanvasCtx.fillRect(0, 0, WIDTH, HEIGHT);
+    // Fill transparent
+    waveCanvasCtx.clearRect(0, 0, WIDTH, HEIGHT);
     // Begin the path
     waveCanvasCtx.lineWidth = 2;
-    waveCanvasCtx.strokeStyle = "rgb(0 0 0)";
+    waveCanvasCtx.strokeStyle = "rgb(19, 241, 19)";
     waveCanvasCtx.beginPath();
     // Draw each point in the waveform
     const sliceWidth = WIDTH / bufferLength;
@@ -74,8 +73,7 @@ function drawWave(dataArray, bufferLength) {
 function drawBar(dataArray, bufferLength) {
     requestAnimationFrame(() => drawBar(dataArray, bufferLength));
     barAnalyser.getByteFrequencyData(dataArray);
-    barCanvasCtx.fillStyle = "rgb(0 0 0)";
-    barCanvasCtx.fillRect(0, 0, WIDTH, HEIGHT);
+    barCanvasCtx.clearRect(0, 0, WIDTH, HEIGHT);
     const barWidth = (WIDTH / bufferLength) * 2.5;
     let barHeight;
     let x = 0;
