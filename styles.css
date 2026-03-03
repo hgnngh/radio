@@ -11,7 +11,20 @@ table {
 }
 
 td {
+    position: relative;
     border: 2px solid black;
     height: 60px;
-    padding-left: 10px;
+    text-align: center;
+}
+
+#tableText {
+    position: relative;
+    z-index: 10;
+}
+
+#barCanvas {
+    position: absolute;
+    z-index: -1;
+    bottom: 0;
+    left: 0;
 }
