@@ -1,3 +1,9 @@
+const barCanvasElements = document.querySelectorAll('.barCanvas');
+barCanvasElements.forEach(canvas => {
+    canvas.setAttribute('width', '980');
+    canvas.setAttribute('height', '50');
+});
+
 const audioCtx = new AudioContext();
 const barAnalyser = audioCtx.createAnalyser();
 
