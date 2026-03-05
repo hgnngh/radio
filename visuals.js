@@ -1,13 +1,21 @@
-const barCanvas = document.getElementById("barCanvas");
-const barCanvasCtx = barCanvas.getContext("2d");
-
-const WIDTH = barCanvas.getAttribute("width");
-const HEIGHT = barCanvas.getAttribute("height");
-
 const audioCtx = new AudioContext();
 const barAnalyser = audioCtx.createAnalyser();
 
-function setUpAudioVisuals(stream) {
+let barCanvas;
+let barCtx;
+let WIDTH;
+let HEIGHT;
+
+function initBarCanvas(canvasElement) {
+    barCanvas = canvasElement;
+    barCtx = barCanvas.getContext("2d");
+    WIDTH = barCanvas.getAttribute("width");
+    HEIGHT = barCanvas.getAttribute("height");
+}
+
+function setUpAudioVisuals(stream, canvasElement) {
+    initBarCanvas(canvasElement);
+
     audioCtx.resume();
     // pass in the stream
     source = audioCtx.createMediaStreamSource(stream);
@@ -17,29 +25,26 @@ function setUpAudioVisuals(stream) {
     source.connect(barAnalyser);
     barAnalyser.connect(audioCtx.destination);
 
-    setUpBarVisual();
-}
-
-function setUpBarVisual() {
     barAnalyser.fftSize = 256;
     const bufferLength = barAnalyser.frequencyBinCount;
     const dataArray = new Uint8Array(bufferLength);
-    barCanvasCtx.clearRect(0, 0, WIDTH, HEIGHT);
+    barCtx.clearRect(0, 0, WIDTH, HEIGHT);
+
     drawBar(dataArray, bufferLength);
 }
 
 function drawBar(dataArray, bufferLength) {
     requestAnimationFrame(() => drawBar(dataArray, bufferLength));
     barAnalyser.getByteFrequencyData(dataArray);
-    barCanvasCtx.clearRect(0, 0, WIDTH, HEIGHT);
+    barCtx.clearRect(0, 0, WIDTH, HEIGHT);
     const barWidth = (WIDTH / bufferLength) * 2.5;
     let barHeight;
     let x = 0;
     for (let i = 0; i < bufferLength; i++) {
         barHeight = dataArray[i] / 2;
 
-        barCanvasCtx.fillStyle = `rgb(${barHeight + 100} 50 50)`;
-        barCanvasCtx.fillRect(x, HEIGHT - barHeight / 2, barWidth, barHeight);
+        barCtx.fillStyle = `rgb(${barHeight + 100} 50 50)`;
+        barCtx.fillRect(x, HEIGHT - barHeight / 2, barWidth, barHeight);
 
         x += barWidth + 1;
     }

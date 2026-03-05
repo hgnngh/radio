@@ -76,7 +76,8 @@ function handleAudioPlaying(buttonElement, audioElement) {
     textElement.textContent = "stop playing";
     // audio visual effects
     const stream = audioElement.captureStream();
-    setUpAudioVisuals(stream);
+    const canvasElement = buttonElement.querySelector('.barCanvas');
+    setUpAudioVisuals(stream, canvasElement);
 }
 function handleAudioLoading(buttonElement) {
     const textElement = buttonElement.querySelector('.text');
