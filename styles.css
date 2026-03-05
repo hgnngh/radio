@@ -22,4 +22,6 @@ td {
     z-index: -1;
     bottom: 0;
     right: 0;
+    border: 2px solid #d40f0f;
+
 }
