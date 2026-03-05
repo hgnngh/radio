@@ -4,23 +4,10 @@ const barAnalyser = audioCtx.createAnalyser();
 const WIDTH = 980;
 const HEIGHT = 50;
 
-let barCanvas;
-let barCtx;
-
-const barCanvasElements = document.querySelectorAll('.barCanvas');
-barCanvasElements.forEach(canvas => {
-    canvas.setAttribute('width', WIDTH);
-    canvas.setAttribute('height', HEIGHT);
-});
-
-function initBarCanvas(canvasElement) {
-    barCanvas = canvasElement;
-    barCtx = barCanvas.getContext("2d");
-}
+const barCanvas = document.getElementById("testCanvas");
+const barCtx = barCanvas.getContext("2d");
 
 function setUpAudioVisuals(stream, canvasElement) {
-    initBarCanvas(canvasElement);
-
     audioCtx.resume();
     // pass in the stream
     source = audioCtx.createMediaStreamSource(stream);
