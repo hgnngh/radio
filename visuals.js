@@ -21,6 +21,8 @@ function setUpAudioVisuals(stream, canvasElement) {
     const bufferLength = barAnalyser.frequencyBinCount;
     const dataArray = new Uint8Array(bufferLength);
     barCtx.clearRect(0, 0, WIDTH, HEIGHT);
+    barCtx.fillStyle = "blue";
+    barCtx.fillRect(0, 0, WIDTH, HEIGHT);
 
     drawBar(dataArray, bufferLength);
 }
@@ -29,6 +31,8 @@ function drawBar(dataArray, bufferLength) {
     requestAnimationFrame(() => drawBar(dataArray, bufferLength));
     barAnalyser.getByteFrequencyData(dataArray);
     barCtx.clearRect(0, 0, WIDTH, HEIGHT);
+    barCtx.fillStyle = "yellow";
+    barCtx.fillRect(0, 0, WIDTH, HEIGHT);
     const barWidth = (WIDTH / bufferLength) * 2.5;
     let barHeight;
     let x = 0;
