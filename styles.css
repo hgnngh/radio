@@ -5,13 +5,21 @@ h3 {
 
 table {
     border: 5px solid black;
-    width: 50%;
+    width: 1000px;
     margin: auto;
     table-layout: fixed;
 }
 
 td {
+    position: relative;
     border: 2px solid black;
     height: 60px;
-    padding-left: 10px;
+    text-align: center;
+}
+
+.barCanvas {
+    position: absolute;
+    z-index: -1;
+    bottom: 0;
+    right: 0;
 }
