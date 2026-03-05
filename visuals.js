@@ -2,7 +2,7 @@ const audioCtx = new AudioContext();
 const barAnalyser = audioCtx.createAnalyser();
 
 const WIDTH = 980;
-const HEIGHT = 50;
+const HEIGHT = 200;
 
 const barCanvas = document.getElementById("testCanvas");
 const barCtx = barCanvas.getContext("2d");
