@@ -1,22 +1,21 @@
-const barCanvasElements = document.querySelectorAll('.barCanvas');
-barCanvasElements.forEach(canvas => {
-    canvas.setAttribute('width', '980');
-    canvas.setAttribute('height', '50');
-});
-
 const audioCtx = new AudioContext();
 const barAnalyser = audioCtx.createAnalyser();
 
+const WIDTH = 980;
+const HEIGHT = 50;
+
 let barCanvas;
 let barCtx;
-let WIDTH;
-let HEIGHT;
+
+const barCanvasElements = document.querySelectorAll('.barCanvas');
+barCanvasElements.forEach(canvas => {
+    canvas.setAttribute('width', WIDTH);
+    canvas.setAttribute('height', HEIGHT);
+});
 
 function initBarCanvas(canvasElement) {
     barCanvas = canvasElement;
     barCtx = barCanvas.getContext("2d");
-    WIDTH = barCanvas.getAttribute("width");
-    HEIGHT = barCanvas.getAttribute("height");
 }
 
 function setUpAudioVisuals(stream, canvasElement) {
