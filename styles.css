@@ -1,20 +1,79 @@
+/* 2000s Web UI Theme */
+body {
+    color: #00ff66;
+    /* Neon digital green */
+    font-family: "Courier New", Courier, monospace;
+    padding: 20px;
+}
+
 h1,
 h3 {
     text-align: center;
+    color: #ffffff;
+    text-shadow: 2px 2px #000000;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+h3 {
+    color: #a0aab5;
+    margin-bottom: 25px;
 }
 
 table {
-    border: 5px solid black;
+    border: 4px double #00ff66;
     width: 1000px;
     margin: auto;
     table-layout: fixed;
+    /* Flat harsh shadow */
+}
+
+th {
+    color: #ffffff;
+    border: 2px solid #2b333e;
+    padding: 10px;
+    font-size: 20px;
+    text-transform: uppercase;
+    font-weight: bold;
 }
 
 td {
     position: relative;
-    border: 2px solid black;
+    border: 2px solid #2b333e;
     height: 60px;
     text-align: center;
+    font-size: 18px;
+    font-weight: bold;
+    color: #ffffff;
+}
+
+.playButton {
+    margin: 0;
+    padding: 0;
+
+    color: #00ff66;
+    font-family: "Courier New", Courier, monospace;
+    font-weight: bold;
+    font-size: 14px;
+    cursor: pointer;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+}
+
+.playButton:hover {
+    color: #ffffff;
+}
+
+.playButton .text {
+    position: relative;
+    z-index: 5;
+    /* Pushes text above canvas */
+    background-color: rgba(0, 0, 0, 0.6);
+    /* Text backdrop window */
+    padding: 4px 10px;
+    border: 1px solid #00ff66;
+    pointer-events: none;
 }
 
 .barCanvas {
