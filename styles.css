@@ -1,7 +1,5 @@
-/* 2000s Web UI Theme */
 body {
     color: #00ff66;
-    /* Neon digital green */
     font-family: "Courier New", Courier, monospace;
     padding: 20px;
 }
@@ -25,7 +23,6 @@ table {
     width: 1000px;
     margin: auto;
     table-layout: fixed;
-    /* Flat harsh shadow */
 }
 
 th {
@@ -50,7 +47,6 @@ td {
 .playButton {
     margin: 0;
     padding: 0;
-
     color: #00ff66;
     font-family: "Courier New", Courier, monospace;
     font-weight: bold;
@@ -67,13 +63,8 @@ td {
 
 .playButton .text {
     position: relative;
-    z-index: 5;
-    /* Pushes text above canvas */
     background-color: rgba(0, 0, 0, 0.6);
-    /* Text backdrop window */
-    padding: 4px 10px;
-    border: 1px solid #00ff66;
-    pointer-events: none;
+    padding: 5px 10px;
 }
 
 .barCanvas {
