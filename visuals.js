@@ -7,8 +7,8 @@ const HEIGHT = 50;
 let barCanvas;
 let barCtx;
 
-const barCanvasElements = document.querySelectorAll('.barCanvas');
-barCanvasElements.forEach(canvas => {
+const stationBarCanvasElements = document.querySelectorAll('.stationBarCanvas');
+stationBarCanvasElements.forEach(canvas => {
     canvas.setAttribute('width', WIDTH);
     canvas.setAttribute('height', HEIGHT);
 });
