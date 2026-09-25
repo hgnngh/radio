@@ -1,21 +1,29 @@
 const audioCtx = new AudioContext();
 const barAnalyser = audioCtx.createAnalyser();
 
-const WIDTH = 980;
-const HEIGHT = 50;
+const bigBarCanvas = document.querySelector('.pageBarCanvas');
+const bigBarCtx = bigBarCanvas.getContext("2d");
 
-let barCanvas;
-let barCtx;
+let BIG_WIDTH;
+let BIG_HEIGHT;
 
-const barCanvasElements = document.querySelectorAll('.barCanvas');
-barCanvasElements.forEach(canvas => {
-    canvas.setAttribute('width', WIDTH);
-    canvas.setAttribute('height', HEIGHT);
+const SMALL_WIDTH = 980;
+const SMALL_HEIGHT = 50;
+
+const smallBarCanvasElements = document.querySelectorAll('.stationBarCanvas');
+smallBarCanvasElements.forEach(canvas => {
+    canvas.setAttribute('width', SMALL_WIDTH);
+    canvas.setAttribute('height', SMALL_HEIGHT);
 });
+let smallBarCanvas;
+let smallBarCtx;
 
 function initBarCanvas(canvasElement) {
-    barCanvas = canvasElement;
-    barCtx = barCanvas.getContext("2d");
+    smallBarCanvas = canvasElement;
+    smallBarCtx = smallBarCanvas.getContext("2d");
+
+    BIG_WIDTH = bigBarCanvas.width;
+    BIG_HEIGHT = bigBarCanvas.height;
 }
 
 function setUpAudioVisuals(stream, canvasElement) {
@@ -33,7 +41,9 @@ function setUpAudioVisuals(stream, canvasElement) {
     barAnalyser.fftSize = 256;
     const bufferLength = barAnalyser.frequencyBinCount;
     const dataArray = new Uint8Array(bufferLength);
-    barCtx.clearRect(0, 0, WIDTH, HEIGHT);
+
+    smallBarCtx.clearRect(0, 0, SMALL_WIDTH, SMALL_HEIGHT);
+    bigBarCtx.clearRect(0, 0, BIG_WIDTH, BIG_HEIGHT);
 
     drawBar(dataArray, bufferLength);
 }
@@ -41,16 +51,32 @@ function setUpAudioVisuals(stream, canvasElement) {
 function drawBar(dataArray, bufferLength) {
     requestAnimationFrame(() => drawBar(dataArray, bufferLength));
     barAnalyser.getByteFrequencyData(dataArray);
-    barCtx.clearRect(0, 0, WIDTH, HEIGHT);
-    const barWidth = (WIDTH / bufferLength) * 2.5;
+    drawSmallBars(dataArray, bufferLength);
+    drawBigBars(dataArray, bufferLength);
+}
+
+function drawSmallBars(dataArray, bufferLength) {
+    smallBarCtx.clearRect(0, 0, SMALL_WIDTH, SMALL_HEIGHT);
+    const barWidth = (SMALL_WIDTH / bufferLength) * 2.5;
     let barHeight;
     let x = 0;
     for (let i = 0; i < bufferLength; i++) {
         barHeight = dataArray[i] / 2;
+        smallBarCtx.fillStyle = `rgb(${barHeight + 100} 50 50)`;
+        smallBarCtx.fillRect(x, SMALL_HEIGHT - barHeight / 2, barWidth, barHeight);
+        x += barWidth + 1;
+    }
+}
 
-        barCtx.fillStyle = `rgb(${barHeight + 100} 50 50)`;
-        barCtx.fillRect(x, HEIGHT - barHeight / 2, barWidth, barHeight);
-
+function drawBigBars(dataArray, bufferLength) {
+    bigBarCtx.clearRect(0, 0, BIG_WIDTH, BIG_HEIGHT);
+    const barWidth = (BIG_WIDTH / bufferLength) * 2.5;
+    let barHeight;
+    let x = 0;
+    for (let i = 0; i < bufferLength; i++) {
+        barHeight = dataArray[i] / 2;
+        bigBarCtx.fillStyle = `rgb(50 50 ${barHeight + 100})`;
+        bigBarCtx.fillRect(x, BIG_HEIGHT - barHeight / 2, barWidth, barHeight);
         x += barWidth + 1;
     }
 }
