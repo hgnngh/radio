@@ -18,6 +18,13 @@ smallBarCanvasElements.forEach(canvas => {
 let smallBarCanvas;
 let smallBarCtx;
 
+function clearVisuals() {
+    if (smallBarCtx != null) {
+        smallBarCtx.clearRect(0, 0, SMALL_WIDTH, SMALL_HEIGHT);
+    }
+    barAnalyser.disconnect();
+}
+
 function initBarCanvas(canvasElement) {
     smallBarCanvas = canvasElement;
     smallBarCtx = smallBarCanvas.getContext("2d");
@@ -27,6 +34,9 @@ function initBarCanvas(canvasElement) {
 }
 
 function setUpAudioVisuals(stream, canvasElement) {
+    // clear old station visual first!
+    clearVisuals();
+    // now initialize the new one :)
     initBarCanvas(canvasElement);
 
     audioCtx.resume();
