@@ -51,23 +51,32 @@ function setUpAudioVisuals(stream, canvasElement) {
 function drawBar(dataArray, bufferLength) {
     requestAnimationFrame(() => drawBar(dataArray, bufferLength));
     barAnalyser.getByteFrequencyData(dataArray);
+    drawSmallBars(dataArray, bufferLength);
+    drawBigBars(dataArray, bufferLength);
+}
+
+function drawSmallBars(dataArray, bufferLength) {
     smallBarCtx.clearRect(0, 0, SMALL_WIDTH, SMALL_HEIGHT);
-    bigBarCtx.clearRect(0, 0, BIG_WIDTH, BIG_HEIGHT);
-    const smallBarWidth = (SMALL_WIDTH / bufferLength) * 2.5;
-    const bigBarWidth = (BIG_WIDTH / bufferLength) * 2.5;
+    const barWidth = (SMALL_WIDTH / bufferLength) * 2.5;
     let barHeight;
     let x = 0;
-    let Bx = 0;
     for (let i = 0; i < bufferLength; i++) {
         barHeight = dataArray[i] / 2;
-
         smallBarCtx.fillStyle = `rgb(${barHeight + 100} 50 50)`;
-        smallBarCtx.fillRect(x, SMALL_HEIGHT - barHeight / 2, smallBarWidth, barHeight);
+        smallBarCtx.fillRect(x, SMALL_HEIGHT - barHeight / 2, barWidth, barHeight);
+        x += barWidth + 1;
+    }
+}
 
+function drawBigBars(dataArray, bufferLength) {
+    bigBarCtx.clearRect(0, 0, BIG_WIDTH, BIG_HEIGHT);
+    const barWidth = (BIG_WIDTH / bufferLength) * 2.5;
+    let barHeight;
+    let x = 0;
+    for (let i = 0; i < bufferLength; i++) {
+        barHeight = dataArray[i] / 2;
         bigBarCtx.fillStyle = `rgb(50 50 ${barHeight + 100})`;
-        bigBarCtx.fillRect(Bx, BIG_HEIGHT - barHeight / 2, bigBarWidth, barHeight);
-
-        x += smallBarWidth + 1;
-        Bx += bigBarWidth + 1;
+        bigBarCtx.fillRect(Bx, BIG_HEIGHT - barHeight / 2, barWidth, barHeight);
+        x += barWidth + 1;
     }
 }
