@@ -58,6 +58,8 @@ function turnOffStation(buttonElement) {
     audioElement.pause();
     const textElement = buttonElement.querySelector('.text');
     textElement.textContent = "play";
+    const canvasElement = buttonElement.querySelector('.barCanvas');
+    stopAudioVisuals(canvasElement);
     buttonElement.isPlaying = false;
 }
 
@@ -79,10 +81,12 @@ function handleAudioPlaying(buttonElement, audioElement) {
     const canvasElement = buttonElement.querySelector('.barCanvas');
     setUpAudioVisuals(stream, canvasElement);
 }
+
 function handleAudioLoading(buttonElement) {
     const textElement = buttonElement.querySelector('.text');
     textElement.textContent = "loading...";
 }
+
 function handleAudioError(buttonElement) {
     const textElement = buttonElement.querySelector('.text');
     textElement.textContent = "oh no! there was an error!";

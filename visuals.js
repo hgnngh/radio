@@ -6,6 +6,7 @@ const HEIGHT = 50;
 
 let barCanvas;
 let barCtx;
+let source = null;
 
 const barCanvasElements = document.querySelectorAll('.barCanvas');
 barCanvasElements.forEach(canvas => {
@@ -18,14 +19,19 @@ function initBarCanvas(canvasElement) {
     barCtx = barCanvas.getContext("2d");
 }
 
+function stopAudioVisuals() {
+    if (source) {
+        source.disconnect();
+        source = null;
+    }
+}
+
 function setUpAudioVisuals(stream, canvasElement) {
     initBarCanvas(canvasElement);
 
     audioCtx.resume();
     // pass in the stream
     source = audioCtx.createMediaStreamSource(stream);
-    // connect between source and destination...?
-    source.connect(audioCtx.destination);
     // setup analyser to capture audio from stream
     source.connect(barAnalyser);
     barAnalyser.connect(audioCtx.destination);
