@@ -76,7 +76,7 @@ function drawBigBars(dataArray, bufferLength) {
     for (let i = 0; i < bufferLength; i++) {
         barHeight = dataArray[i] / 2;
         bigBarCtx.fillStyle = `rgb(50 50 ${barHeight + 100})`;
-        bigBarCtx.fillRect(Bx, BIG_HEIGHT - barHeight / 2, barWidth, barHeight);
+        bigBarCtx.fillRect(x, BIG_HEIGHT - barHeight / 2, barWidth, barHeight);
         x += barWidth + 1;
     }
 }
